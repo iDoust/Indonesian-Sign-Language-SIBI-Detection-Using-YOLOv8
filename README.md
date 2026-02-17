@@ -1,52 +1,126 @@
-# SIBI-Indonesian-Sign-Language-Detection
-# Deteksi Bahasa Isyarat Indonesia (SIBI) Menggunakan YOLOv8
+# 🤟 SIBI Alphabet Detection — YOLOv8
 
-Proyek ini menggunakan YOLOv8 (You Only Look Once versi 8) untuk melakukan deteksi objek pada dataset khusus. Model ini dilatih menggunakan Ultralytics YOLOv8 dan diuji dengan berbagai data untuk menghasilkan model deteksi objek yang akurat.
+Deteksi huruf alfabet **Bahasa Isyarat Indonesia (SIBI)** secara real-time menggunakan **YOLOv8**. Model mengenali **26 huruf (A-Z)** dari gesture tangan.
 
-Dataset gesture tangan yang digunakan dalam proyek ini bersumber dari Roboflow dan telah dikonfigurasi untuk mendukung pendeteksian keypoint gesture tangan: 🔗 [USIBI Dataset – Roboflow](https://universe.roboflow.com/usibi-image-translate/usibi-jueew)  
+![Training Results](Result/results.png)
 
-## 🔧 Fitur Utama  
-- Sistem merekam gesture tangan dalam bentuk gambar untuk tiap label bahasa isyarat.
-- Data diberi label menggunakan format standar YOLO dan juga dilengkapi dengan keypoint detection untuk mengenali posisi jari dan tangan secara spesifik.
-- Menggunakan algoritma YOLOv8 untuk mendeteksi posisi dan jenis isyarat secara cepat dan efisien.  
-- Model diuji pada data uji terpisah untuk mengevaluasi akurasi dan performa dalam mengenali gestur tangan.
-- Model akhir diekspor ke format .pt dan .onnx sehingga dapat di-deploy ke berbagai platform (web, mobile, embedded).  
+## 📊 Performa Model
 
-## 📁 Struktur File  
-- YOLOv8.ipynb  # Notebook pelatihan model.  
-- YOLOv8-Testing.ipynb  # Notebook pengujian model.  
-- best.pt  # Model terbaik dalam format PyTorch.  
-- best.onnx  # Model terbaik dalam format ONNX (untuk deployment).  
-- last.pt  # Model terakhir dari proses training.
-- README.md
+| Metrik | Nilai |
+|---|---|
+| **Precision** | 99.66% |
+| **Recall** | 99.32% |
+| **mAP50** | 99.26% |
+| **mAP50-95** | 88.00% |
 
-## 🚀 Teknologi yang Digunakan   
-- Python 3.x  
-- Ultralytics YOLOv8  
-- PyTorch  
-- OpenCV  
-- ONNX (untuk ekspor model)  
-- Pandas, NumPy  
+> Trained with YOLOv8n, 20 epochs, Adam optimizer, 640×640 image size.
 
-## 📊 Arsitektur Model  
-Model YOLOv8 menggunakan:  
-- Backbone: CSPDarknet yang digunakan untuk ekstraksi fitur dari input gambar.  
-- Neck: PANet atau FPN yang menggabungkan fitur dari berbagai tingkatan.  
-- Head: Modul deteksi yang menghasilkan prediksi bounding box, confidence score, dan keypoints.
-Model ini juga mendukung ekspor ke berbagai format seperti **.pt**, **.onnx**, dan **OpenVINO** untuk deployment lintas platform.
+<details>
+<summary>📉 Confusion Matrix</summary>
 
-## 🎯 Tujuan Proyek  
-- Menerapkan YOLOv8 untuk deteksi objek real-time.
-- Mengekspor model ke format lintas platform.
-- Mengevaluasi performa model dalam konteks aplikasi dunia nyata.
+![Confusion Matrix](Result/confusion_matrix.png)
 
-## 📝 Catatan  
-- Dataset gesture tangan yang digunakan diambil dari Roboflow: 🔗 [USIBI Dataset – Roboflow](https://universe.roboflow.com/usibi-image-translate/usibi-jueew)
-- Model YOLOv8 yang digunakan mendukung keypoint detection, sehingga cocok untuk mendeteksi titik-titik penting pada tangan (jari, telapak, dsb).  
-- File yang digunakan untuk model:  
-  - best.pt – Model terbaik dari hasil pelatihan  
-  - last.pt – Model dari iterasi terakhir pelatihan  
-  - best.onnx – Versi ONNX untuk deployment ke platform lain
-- Hasil evaluasi model disimpan dalam file results.csv yang memuat informasi deteksi dan confidence score.  
-- Untuk pelabelan data (annotasi bounding box dan keypoints), disarankan menggunakan tools seperti Roboflow Annotate atau CVAT.  
-- YOLOv8 dilatih menggunakan konfigurasi yang disesuaikan agar optimal untuk dataset SIBI (jumlah kelas gesture, ukuran input gambar, augmentasi, dll).
+Huruf dengan akurasi lebih rendah: C (49), W (55), G (57), P (60).
+
+</details>
+
+## 📁 Struktur File
+
+```
+├── Model/
+│   ├── best.pt                  # Model terbaik (PyTorch)
+│   ├── best.onnx                # Model terbaik (ONNX / deployment)
+│   └── last.pt                  # Model iterasi terakhir
+├── Result/
+│   ├── results.csv              # Training metrics per epoch
+│   ├── results.png              # Training curves
+│   └── confusion_matrix.png
+├── 1. train.py                  # Script training model
+├── 1. YOLOv8-Training.ipynb     # Notebook training (Google Colab)
+├── 2. predict.py                # Script prediksi (image/folder/webcam)
+├── 2. YOLOv8-Predict.ipynb      # Notebook prediksi
+├── requirements.txt             # Dependencies
+├── .env.example                 # Template environment variable
+└── README.md
+```
+
+## 🚀 Setup
+
+```bash
+# Clone repository
+git clone https://github.com/iDoust/Indonesian-Sign-Language-SIBI-Detection-Using-YOLOv8.git
+cd Indonesian-Sign-Language-SIBI-Detection-Using-YOLOv8
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Setup environment variable (untuk training)
+cp .env.example .env
+# Edit .env dan masukkan API key Roboflow
+```
+
+## 🔍 Prediksi
+
+```bash
+# Prediksi dari gambar
+python "2. predict.py" --source path/to/image.jpg
+
+# Prediksi dari folder gambar
+python "2. predict.py" --source path/to/folder/
+
+# Real-time webcam
+python "2. predict.py" --webcam
+
+# Simpan hasil ke folder output/
+python "2. predict.py" --source image.jpg --save
+
+# Custom confidence threshold
+python "2. predict.py" --source image.jpg --conf 0.7
+
+# Gunakan model PyTorch (default: ONNX)
+python "2. predict.py" --source image.jpg --model Model/best.pt
+```
+
+## 🏋️ Training
+
+```bash
+# Training default (20 epochs, YOLOv8n)
+python "1. train.py"
+
+# Custom training
+python "1. train.py" --epochs 100 --model yolov8s.pt --imgsz 640
+
+# Lihat semua opsi
+python "1. train.py" --help
+```
+
+## 🛠 Teknologi
+
+- **Python** 3.x
+- **YOLOv8** (Ultralytics) — Object Detection
+- **PyTorch** — Deep Learning Framework
+- **OpenCV** — Computer Vision
+- **ONNX** — Cross-platform Model Format
+- **Roboflow** — Dataset Management
+
+## 📊 Arsitektur Model
+
+```
+Input (640×640) → CSPDarknet (Backbone) → PANet/FPN (Neck) → Detection Head
+                                                                ├── Bounding Box
+                                                                ├── Confidence Score
+                                                                └── Class (A-Z)
+```
+
+## 📚 Dataset
+
+Dataset gesture tangan bersumber dari Roboflow:
+🔗 [USIBI Dataset — Roboflow](https://universe.roboflow.com/usibi-image-translate/usibi-jueew)
+
+- **26 kelas**: Huruf alfabet A-Z
+- **Format**: YOLOv8 (bounding box annotations)
+- **Augmentasi**: Default Ultralytics (mosaic, flipping, scaling)
+
+## 📝 Lisensi
+
+MIT License
