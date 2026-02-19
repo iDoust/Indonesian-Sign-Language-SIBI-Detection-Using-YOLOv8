@@ -21,7 +21,7 @@ from ultralytics import YOLO
 
 
 # Project root directory
-PROJECT_DIR = Path(__file__).parent
+PROJECT_DIR = Path(__file__).parent.parent
 DEFAULT_MODEL = PROJECT_DIR / "Model" / "best.onnx"
 
 

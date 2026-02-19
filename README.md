@@ -27,55 +27,57 @@ Huruf dengan akurasi lebih rendah: C (49), W (55), G (57), P (60).
 ## 📁 Struktur File
 
 ```
-├── Model/
+## 📁 Project Structure
+📁 SIBI Detection Using YOLOv8/
+├── 📁 Notebooks/           # Original Jupyter Notebooks
+│   ├── 1. YOLOv8-Training.ipynb
+│   └── 2. YOLOv8-Predict.ipynb
+├── 📁 Scripts/             # Standalone Python Scripts
+│   ├── 1. train.py
+│   └── 2. predict.py
+├── 📁 Model/               # Model weights (.pt, .onnx)
 │   ├── best.pt                  # Model terbaik (PyTorch)
 │   ├── best.onnx                # Model terbaik (ONNX / deployment)
 │   └── last.pt                  # Model iterasi terakhir
-├── Result/
+├── 📁 Result/              # Training results & metrics
 │   ├── results.csv              # Training metrics per epoch
 │   ├── results.png              # Training curves
 │   └── confusion_matrix.png
-├── 1. train.py                  # Script training model
-├── 1. YOLOv8-Training.ipynb     # Notebook training (Google Colab)
-├── 2. predict.py                # Script prediksi (image/folder/webcam)
-├── 2. YOLOv8-Predict.ipynb      # Notebook prediksi
-├── requirements.txt             # Dependencies
-├── .env.example                 # Template environment variable
+├── .env                    # Roboflow API Key
+├── requirements.txt
 └── README.md
-```
 
-## 🚀 Setup
+## 🚀 Usage Guide
 
+### 1. Installation
+Install the required dependencies:
 ```bash
-# Clone repository
-git clone https://github.com/iDoust/Indonesian-Sign-Language-SIBI-Detection-Using-YOLOv8.git
-cd Indonesian-Sign-Language-SIBI-Detection-Using-YOLOv8
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Setup environment variable (untuk training)
-cp .env.example .env
-# Edit .env dan masukkan API key Roboflow
 ```
 
-## 🔍 Prediksi
-
+### 2. Training the Model
+Run the training script from the project root:
 ```bash
-# Prediksi dari gambar
-python "2. predict.py" --source path/to/image.jpg
+python Scripts/1. train.py --epochs 50 --model yolov8n.pt
+```
 
-# Prediksi dari folder gambar
-python "2. predict.py" --source path/to/folder/
+### 3. Running Predictions
+Standard predictions on images, folders, or webcam:
+```bash
+# Predicted from image
+python Scripts/2. predict.py --source image.jpg
 
-# Real-time webcam
-python "2. predict.py" --webcam
+# Predicted from folder
+python Scripts/2. predict.py --source data/test/images/
 
+# Real-time webcam detection
+python Scripts/2. predict.py --webcam
+```
 # Simpan hasil ke folder output/
-python "2. predict.py" --source image.jpg --save
+python Scripts/2. predict.py --source image.jpg --save
 
 # Custom confidence threshold
-python "2. predict.py" --source image.jpg --conf 0.7
+python Scripts/2. predict.py --source image.jpg --conf 0.7
 
 # Gunakan model PyTorch (default: ONNX)
 python "2. predict.py" --source image.jpg --model Model/best.pt

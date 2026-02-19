@@ -66,7 +66,8 @@ def parse_args():
 
 def download_dataset():
     """Download USIBI dataset from Roboflow."""
-    load_dotenv()
+    env_path = Path(__file__).parent.parent / ".env"
+    load_dotenv(dotenv_path=env_path)
 
     api_key = os.getenv("ROBOFLOW_API_KEY")
     if not api_key:
